@@ -1,9 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -61,6 +59,22 @@ async function run() {
         res.json(products);
       } catch (error) {
         console.error("Error fetching products:", error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    app.get("/api/v1/products/:productId", async (req, res) => {
+      try {
+        const productId = req.params.productId;
+        const product = await collection.findOne({ _id: productId });
+
+        if (!product) {
+          return res.status(404).json({ error: "Product not found" });
+        }
+
+        res.json(product);
+      } catch (error) {
+        console.error("Error fetching product:", error);
         res.status(500).json({ error: "Internal server error" });
       }
     });
