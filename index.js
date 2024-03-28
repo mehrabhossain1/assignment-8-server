@@ -30,7 +30,8 @@ async function run() {
 
     app.post("/api/v1/products", async (req, res) => {
       try {
-        const { image, title, price, ratings, brand, description } = req.body;
+        const { image, title, price, ratings, brand, description, flashSale } =
+          req.body;
 
         // Insert the new product into the MongoDB collection
         const result = await collection.insertOne({
@@ -40,6 +41,7 @@ async function run() {
           ratings,
           brand,
           description,
+          flashSale,
         });
 
         res.status(201).json({
