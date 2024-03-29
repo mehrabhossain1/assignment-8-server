@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
@@ -63,22 +63,21 @@ async function run() {
       }
     });
 
-    app.get("/api/v1/products/:productId", async (req, res) => {
+    app.get("/api/v1/products/:id", async (req, res) => {
       try {
-        const productId = req.params.productId;
-        const product = await collection.findOne({ _id: productId });
+        const id = req.params.id;
+
+        const product = await collection.findOne({ _id: new ObjectId(id) });
 
         if (!product) {
           return res.status(404).json({ error: "Product not found" });
         }
-
         res.json(product);
       } catch (error) {
         console.error("Error fetching product:", error);
         res.status(500).json({ error: "Internal server error" });
       }
     });
-
     // Start the server
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
